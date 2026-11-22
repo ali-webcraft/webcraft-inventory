@@ -1,5 +1,7 @@
-const dns = require('dns');
-dns.setServers(['1.1.1.1', '8.8.8.8']);
+// Ye sirf ghar/hotspot ke DNS masle ka hal hai, live server par iski zaroorat nahi
+if (process.env.NODE_ENV !== 'production') {
+ require('dns').setServers(['1.1.1.1', '8.8.8.8'])
+}
 
 require('dotenv').config()
 

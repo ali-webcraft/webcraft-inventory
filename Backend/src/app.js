@@ -13,6 +13,10 @@ app.use(cookieParser())
 
 app.use(express.json());
 app.use(logger)
+
+// Live server ko jagaye rakhne aur check karne ke liye
+app.get('/api/health', (req, res) => res.json({ ok: true }))
+
 app.use('/api/product', productRouter)
 app.use('/api/auth', authRouter)
 app.use(errorHandler)
