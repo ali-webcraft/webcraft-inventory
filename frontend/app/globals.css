@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+/* Geist font ko poori site ka default font bana diya */
+@theme inline {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+/* Design A: halka grey background, gehra text */
+body {
+  background: #f6f7f9;
+  color: #111827;
+}
