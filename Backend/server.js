@@ -11,12 +11,19 @@ const connectDB = require('./src/config/db');
 
 const PORT = process.env.PORT || 3000;
 
-async function startServer() {
- await connectDB()
- app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
- }
- )
+// `node server.js` (ya nodemon) se chalane par server shuru hota hai.
+// Vercel is file ko import karta hai aur sirf neeche export kiya hua `app` leta hai, isliye wahan listen nahi hota.
+if (require.main === module) {
+ connectDB()
+  .then(() => {
+   app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+   })
+  })
+  .catch((error) => {
+   console.error('MongoDB connection failed:', error.message);
+   process.exit(1);
+  })
 }
 
-startServer()
+module.exports = app
