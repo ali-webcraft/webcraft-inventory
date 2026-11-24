@@ -4,18 +4,12 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import Navbar, { User } from "../../components/Navbar"
-
-// Har input par yehi style lagti hai, is liye ek jagah likh di
-const inputClass = "rounded-lg border border-gray-300 px-3 py-3 text-sm focus:border-indigo-600 focus:outline-none"
+import ProductFields, { emptyProduct, ProductValues } from "../../components/ProductFields"
 
 export default function NewProductPage() {
  const router = useRouter()
  const [user, setUser] = useState<User | null>(null)
- const [name, setName] = useState('')
- const [price, setPrice] = useState('')
- const [stock, setStock] = useState('')
- const [category, setCategory] = useState('')
- const [description, setDescription] = useState('')
+ const [values, setValues] = useState<ProductValues>(emptyProduct)
  const [file, setFile] = useState<File | null>(null)
  const [error, setError] = useState('')
  const [loading, setLoading] = useState(true)
@@ -41,6 +35,10 @@ export default function NewProductPage() {
   checkAdmin()
  }, [router])
 
+ const handleChange = (field: keyof ProductValues, value: string) => {
+  setValues((current) => ({ ...current, [field]: value }))
+ }
+
  const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault()
 
@@ -50,11 +48,11 @@ export default function NewProductPage() {
   }
 
   const formData = new FormData()
-  formData.append('name', name)
-  formData.append('price', price)
-  formData.append('stock', stock)
-  formData.append('category', category)
-  formData.append('description', description)
+  formData.append('name', values.name)
+  formData.append('price', values.price)
+  formData.append('stock', values.stock)
+  formData.append('category', values.category)
+  formData.append('description', values.description)
   formData.append('image', file)
 
   setError('')
@@ -89,31 +87,7 @@ export default function NewProductPage() {
     <h1 className="mb-5 text-2xl font-semibold">Add Product</h1>
 
     <form onSubmit={handleSubmit} className="flex flex-col gap-5 rounded-2xl border border-gray-200 bg-white p-8">
-     <div className="flex flex-col gap-1.5">
-      <label htmlFor="name" className="text-sm font-medium">Name</label>
-      <input id="name" type="text" placeholder="Product name" className={inputClass} value={name} onChange={(e) => setName(e.target.value)} />
-     </div>
-
-     <div className="flex gap-4">
-      <div className="flex flex-1 flex-col gap-1.5">
-       <label htmlFor="price" className="text-sm font-medium">Price</label>
-       <input id="price" type="number" placeholder="0" className={inputClass} value={price} onChange={(e) => setPrice(e.target.value)} />
-      </div>
-      <div className="flex flex-1 flex-col gap-1.5">
-       <label htmlFor="stock" className="text-sm font-medium">Stock</label>
-       <input id="stock" type="number" placeholder="0" className={inputClass} value={stock} onChange={(e) => setStock(e.target.value)} />
-      </div>
-     </div>
-
-     <div className="flex flex-col gap-1.5">
-      <label htmlFor="category" className="text-sm font-medium">Category</label>
-      <input id="category" type="text" placeholder="e.g. Electronics" className={inputClass} value={category} onChange={(e) => setCategory(e.target.value)} />
-     </div>
-
-     <div className="flex flex-col gap-1.5">
-      <label htmlFor="description" className="text-sm font-medium">Description</label>
-      <textarea id="description" rows={3} placeholder="Short description" className={`${inputClass} resize-y`} value={description} onChange={(e) => setDescription(e.target.value)} />
-     </div>
+     <ProductFields values={values} onChange={handleChange} />
 
      <div className="flex flex-col gap-1.5">
       <label htmlFor="image" className="text-sm font-medium">Product image</label>

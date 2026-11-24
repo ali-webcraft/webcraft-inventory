@@ -25,15 +25,18 @@ const createProduct = async (req, res, next) => {
   }
 }
 
+// Search mein user ne (, [, * jaisa kuch likha to regex toot jata tha, is liye khaas nishaniyon ko normal text bana dete hain
+const escapeRegex = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
 const getAllProducts = async (req, res, next) => {
   try {
-    // 1. FILTER: 
+    // 1. FILTER: (String(...) is liye ke query mein koi object na ghus sake)
     const filter = {}
     if (req.query.category) {
-      filter.category = req.query.category
+      filter.category = String(req.query.category)
     }
     if (req.query.search) {
-      filter.name = { $regex: req.query.search, $options: 'i' }
+      filter.name = { $regex: escapeRegex(String(req.query.search)), $options: 'i' }
     }
 
     // 2. PAGINATION:
@@ -67,6 +70,16 @@ const getAllProducts = async (req, res, next) => {
       totalPages,
       data: products
     })
+  } catch (error) {
+    next(error)
+  }
+}
+
+// Frontend ke category dropdown ke liye: database mein jitni alag categories hain
+const getCategories = async (req, res, next) => {
+  try {
+    const categories = await Product.distinct('category')
+    res.status(200).json({ success: true, data: categories.sort() })
   } catch (error) {
     next(error)
   }
@@ -168,6 +181,7 @@ const updateStock = async (req, res, next) => {
 module.exports = {
   createProduct,
   getAllProducts,
+  getCategories,
   getProductById,
   updateProduct,
   deleteProduct,

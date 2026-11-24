@@ -4,6 +4,7 @@ const productRouter = express.Router();
 const {
  createProduct,
  getAllProducts,
+ getCategories,
  getProductById,
  updateProduct,
  deleteProduct,
@@ -18,6 +19,7 @@ const { createProductSchema, updateProductSchema } = require('../validators/prod
 
 productRouter.post('/', protect, adminOnly, uploads.single('image'), validate(createProductSchema), createProduct)
 productRouter.get('/', getAllProducts)
+productRouter.get('/categories', getCategories)
 productRouter.get('/:id', getProductById)
 productRouter.put('/:id', protect, adminOnly, validate(updateProductSchema), updateProduct)
 productRouter.delete('/:id', protect, adminOnly, deleteProduct)
