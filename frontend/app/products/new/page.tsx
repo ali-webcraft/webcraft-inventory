@@ -14,6 +14,7 @@ export default function NewProductPage() {
  const [error, setError] = useState('')
  const [loading, setLoading] = useState(true)
  const [submitting, setSubmitting] = useState(false)
+ const [fileKey, setFileKey] = useState(0)
 
  useEffect(() => {
   const checkAdmin = async () => {
@@ -37,6 +38,15 @@ export default function NewProductPage() {
 
  const handleChange = (field: keyof ProductValues, value: string) => {
   setValues((current) => ({ ...current, [field]: value }))
+ }
+
+ // Form ko bilkul khali karta hai. Next.js purana page yaad rakhta hai (state ke sath),
+ // is liye save hone ke baad ya Cancel par hum khud saaf karte hain.
+ const resetForm = () => {
+  setValues(emptyProduct)
+  setFile(null)
+  setError('')
+  setFileKey((k) => k + 1) // file input ko khali karne ka tareeqa: usay naya bana do
  }
 
  const handleSubmit = async (e: React.FormEvent) => {
@@ -68,6 +78,7 @@ export default function NewProductPage() {
     setError(data.message)
     return
    }
+   resetForm()
    router.push('/products')
   } catch (error) {
    console.log(error)
@@ -93,6 +104,7 @@ export default function NewProductPage() {
       <label htmlFor="image" className="text-sm font-medium">Product image</label>
       <input
        id="image"
+       key={fileKey}
        type="file"
        accept="image/*"
        className="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-5 text-sm"
@@ -103,7 +115,7 @@ export default function NewProductPage() {
      {error && <p className="text-sm text-red-700">{error}</p>}
 
      <div className="flex justify-end gap-3">
-      <Link href="/products" className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium hover:bg-gray-50">
+      <Link href="/products" onClick={resetForm} className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium hover:bg-gray-50">
        Cancel
       </Link>
       <button
