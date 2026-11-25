@@ -1,5 +1,6 @@
 'use client'
 
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 
@@ -73,6 +74,11 @@ export default function Login() {
     </button>
 
     {error && <p className="text-sm text-red-700">{error}</p>}
+
+    <p className="text-center text-sm text-gray-600">
+     New here?{' '}
+     <Link href="/register" className="font-medium text-indigo-600 hover:underline">Create an account</Link>
+    </p>
    </form>
   </div>
  )
